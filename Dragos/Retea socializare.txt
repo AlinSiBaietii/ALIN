@@ -1,0 +1,244 @@
+#include <iostream>
+#include <string>
+
+class Profil{
+private:
+    int id;
+    std::string nume;
+    int an_nastere;
+    int luna_nastere;
+    int zi_nastere;
+public:
+    Profil(){}
+    
+    void setId(int id){
+        this->id = id;
+    }
+    int getId(){
+        return this->id;
+    }
+    
+    void setNume(std::string nume){
+        this->nume = nume;
+    }
+    std::string getNume(){
+        return this->nume;
+    }
+    
+    void setAnNastere(int an_nastere){
+        this->an_nastere = an_nastere;
+    }
+    int getAnNastere(){
+        return this->an_nastere;
+    }
+    
+    void setLunaNastere(int luna_nastere){
+        this->luna_nastere = luna_nastere;
+    }
+    int getLunaNastere(){
+        return this->luna_nastere;
+    }
+    
+    void setZiNastere(int zi_nastere){
+        this->zi_nastere = zi_nastere;
+    }
+    int getZiNastere(){
+        return this->zi_nastere;
+    }
+};
+
+class Post{
+private:
+    int id_profil;
+    int limita_inferioara;
+    int limita_superioara;
+    std::string continut;
+public:
+    Post(){}
+    
+    void setIdProfil(int id_profil){
+        this->id_profil = id_profil;
+    }
+    int getIdProfil(){
+        return this->id_profil;
+    }
+    
+    void setLimitaInferioara(int limita_inferioara){
+        this->limita_inferioara = limita_inferioara;
+    }
+    int getLimitaInferioara(){
+        return this->limita_inferioara;
+    }
+    
+    void setLimitaSuperioara(int limita_superioara){
+        this->limita_superioara = limita_superioara;
+    }
+    int getLimitaSuperioara(){
+        return this->limita_superioara;
+    }
+    
+    void setContinut(std::string continut){
+        this->continut = continut;
+    }
+    std::string getContinut(){
+        return this->continut;
+    }
+};
+
+class Website{
+public:
+    Profil pr[1000];
+    Post po[5000];
+};
+
+int main(){
+    int nr_utilizatori;
+    std::string nume;
+    int an_nastere;
+    int luna_nastere;
+    int zi_nastere;
+    Website w;
+    
+    std::cin >> nr_utilizatori;
+    for(int i = 0; i < nr_utilizatori; i++){
+        std::cin.ignore();
+        std::getline(std::cin, nume);
+        std::cin >> an_nastere;
+        std::cin >> luna_nastere;
+        std::cin >> zi_nastere;
+        w.pr[i].setId(i);
+        w.pr[i].setNume(nume);
+        w.pr[i].setAnNastere(an_nastere);
+        w.pr[i].setLunaNastere(luna_nastere);
+        w.pr[i].setZiNastere(zi_nastere);
+    }
+    
+    int comanda;
+    std::cin >> comanda;
+    switch(comanda){
+        case 1:
+        {
+            for(int i = 0; i < nr_utilizatori; i++){
+                std::cout << w.pr[i].getId() << "\n";
+                std::cout << w.pr[i].getNume() << "\n";
+                std::cout << w.pr[i].getAnNastere() << " ";
+                std::cout << w.pr[i].getLunaNastere() << " ";
+                std::cout << w.pr[i].getZiNastere() << "\n";
+            }
+        }
+        break;
+        case 2:
+        {
+            for(int i = 0; i < nr_utilizatori; i++){
+                bool ok = true;
+                
+                if(w.pr[i].getAnNastere() < 1900 || w.pr[i].getAnNastere() > 2021){
+                    ok = false;
+                }
+                if(w.pr[i].getLunaNastere() < 1 || w.pr[i].getLunaNastere() > 12){
+                    ok = false;
+                }
+                if(w.pr[i].getZiNastere() < 1 || w.pr[i].getZiNastere() > 30){
+                    ok = false;
+                }
+                
+                if(ok){
+                    std::cout << w.pr[i].getId() << "\n";
+                    std::cout << w.pr[i].getAnNastere() << " ";
+                    std::cout << w.pr[i].getLunaNastere() << " ";
+                    std::cout << w.pr[i].getZiNastere() << "\n";
+                }else{
+                    std::cout << w.pr[i].getId() << "\n";
+                    std::cout << "EROARE: Data de nastere introdusa nu e valida\n";
+                }
+            }
+        }
+        break;
+        case 3:
+        {
+            int azi_an;
+            int azi_luna;
+            int azi_zi;
+            std::cin >> azi_an;
+            std::cin >> azi_luna;
+            std::cin >> azi_zi;
+            
+            for(int i = 0; i < nr_utilizatori; i++){
+                int varsta = azi_an - w.pr[i].getAnNastere();
+                if(varsta > 0){
+                    if(azi_luna < w.pr[i].getLunaNastere()){
+                        varsta = varsta - 1;
+                    }else if(azi_luna == w.pr[i].getLunaNastere()){
+                        if(azi_zi < w.pr[i].getZiNastere()){
+                            varsta = varsta - 1;
+                        }
+                    }
+                }
+                
+                if(varsta >= 18){
+                    std::cout << w.pr[i].getNume() << "\n";
+                    std::cout << varsta << "\n";
+                }
+            }
+        }
+        break;
+        case 4:
+        {
+            int azi_an;
+            int azi_luna;
+            int azi_zi;
+            std::cin >> azi_an;
+            std::cin >> azi_luna;
+            std::cin >> azi_zi;
+            
+            int nr_postari;
+            std::cin >> nr_postari;
+            
+            int id_profil;
+            int limita_inferiora;
+            int limita_superioara;
+            std::string continut;
+            for(int i = 0; i < nr_postari; i++){
+                std::cin >> id_profil;
+                std::cin >> limita_inferiora;
+                std::cin >> limita_superioara;
+                
+                std::cin.ignore();
+                std::getline(std::cin, continut);
+                
+                w.po[i].setIdProfil(id_profil);
+                w.po[i].setLimitaInferioara(limita_inferiora);
+                w.po[i].setLimitaSuperioara(limita_superioara);
+                w.po[i].setContinut(continut);
+            }
+            
+            int varsta = azi_an - w.pr[0].getAnNastere();
+            if(varsta > 0){
+                if(azi_luna < w.pr[0].getLunaNastere()){
+                    varsta = varsta - 1;
+                }else if(azi_luna == w.pr[0].getLunaNastere()){
+                    if(azi_zi < w.pr[0].getZiNastere()){
+                        varsta = varsta - 1;
+                    }
+                }
+            }
+            
+            bool postariDeVizualizat = false;
+            //Afisam pe ecran
+            std::cout << "News Feed\n";
+            for(int i = 0; i < nr_postari; i++){
+                if((w.po[i].getIdProfil() == 0) || ((w.po[i].getLimitaInferioara() <= varsta) && (w.po[i].getLimitaSuperioara() >= varsta))){
+                    std::cout << w.pr[w.po[i].getIdProfil()].getNume() << "\n";
+                    std::cout << w.po[i].getContinut() << "\n";
+                    postariDeVizualizat = true;
+                }
+            }
+            
+            if(postariDeVizualizat == false){
+                std::cout << "No posts for you\n";
+            }
+        }
+        break;
+    }
+    return 0;
+}
