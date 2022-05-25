@@ -1,0 +1,166 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+class Proprietate {
+protected:
+    int pret;
+    std::string locatie;
+    int suprafata;
+    char tip;
+public:
+    Proprietate (char tip, int pret, std::string locatie, int suprafata): tip(tip), pret(pret), locatie(locatie), suprafata(suprafata) {}
+    virtual void afisare()=0;
+    virtual int suprafata_totala()=0;
+    virtual float pret_per_mp()=0;
+    virtual bool filtru(char, int, std::string, int, int)=0;
+};
+ 
+bool comparatie(Proprietate* lhs, Proprietate* rhs) {
+    return (lhs->pret_per_mp()<rhs->pret_per_mp());
+}
+ 
+class Casa: public Proprietate {
+private:
+    int nr_etaje;
+public:
+    Casa (char tip, int pret, std::string locatie, int suprafata, int nr_etaje):
+        Proprietate (tip, pret, locatie, suprafata), nr_etaje(nr_etaje){}
+ 
+    void afisare() {
+        std::cout<<"Casa"<<pret<<" "<<locatie<<" "<<suprafata<<" "<<nr_etaje<<"\n";
+    }
+ 
+    int suprafata_totala() {
+        return nr_etaje*suprafata;
+    }
+ 
+    float pret_per_mp(){
+        return float(pret)/suprafata_totala();
+    }
+ 
+    bool filtru(char tip, int pret, std::string locatie, int suprafata, int nr_etaje) {
+        return ((this->tip==tip)&& 
+        ((this->pret>=pret) || (this->pret==0)) &&
+        ((this->locatie==locatie) || (this->locatie=="0")) &&
+        ((this->suprafata>=suprafata) || (this->suprafata==0)) &&
+        ((this->nr_etaje>=nr_etaje) || (this->nr_etaje==0)));
+    }
+};
+ 
+class Apartament: public Proprietate {
+private: 
+    int terasa;
+ 
+public:
+    Apartament (char tip, int pret, std::string locatie, int suprafata, int terasa): 
+        Proprietate (tip, pret, locatie, suprafata), terasa(terasa) {}
+ 
+    void afisare() {
+        std::cout<<"Apartament"<<pret<<" "<<locatie<<" "<<suprafata<<" "<<terasa<<"\n";
+    }
+ 
+    int suprafata_totala() {
+        return suprafata+terasa;
+    }
+ 
+    float pret_per_mp(){
+        return float(pret)/suprafata_totala();
+    }
+ 
+    bool filtru(char tip, int pret, std::string locatie, int suprafata, int terasa) {
+        return ((this->tip==tip)&& 
+        ((this->pret>=pret) || (this->pret==0)) &&
+        ((this->locatie==locatie) || (this->locatie=="0")) &&
+        ((this->suprafata>=suprafata) || (this->suprafata==0)) &&
+        ((this->terasa>=terasa) || (this->terasa==0)));
+    }
+    /*Apartament (int pret, std::string locatie, int suprafata, int terasa): terasa(terasa) {
+        this->pret=pret;
+        this->locatie=locatie;
+        this->suprafata=suprafata;
+    }*/
+};
+ 
+int main () {
+    int nr_proprietati;
+    char tip_proprietate;
+    int pret;
+    std::string locatie;
+    int suprafata;
+    int terasa;
+    int nr_etaje;
+    std::vector<Proprietate*> proprietati;
+    int comanda;
+ 
+    std::cin>>nr_proprietati;
+ 
+    for (int i=0; i<nr_proprietati; i++) {
+        std::cin>>tip_proprietate;
+        std::cin>>pret;
+        std::cin>>locatie;
+        std::cin>>suprafata;
+        if (tip_proprietate=='a'){
+            std::cin>>terasa;
+            Proprietate* p_apartament=new Apartament (tip_proprietate, pret, locatie, suprafata, terasa);
+            proprietati.push_back(p_apartament);
+        }
+        else if (tip_proprietate=='c'){
+            std::cin>>nr_etaje;
+            Proprietate* p_casa=new Casa (tip_proprietate, pret, locatie, suprafata, nr_etaje);
+            proprietati.push_back(p_casa);
+        }
+    }
+ 
+    std::cin>>comanda;
+ 
+    switch (comanda){
+        case 1: {
+            for (auto a: proprietati){
+                a->afisare();
+            }
+            break;
+        }
+ 
+        case 2: {
+            for (auto a: proprietati){
+                std::cout<<a->suprafata_totala()<<"\n";
+            }
+            break;
+        }
+ 
+        case 3: {
+            for (auto a: proprietati){
+                std::cout<< std::fixed << std::setprecision(2) <<a->pret_per_mp()<<"\n";
+            }
+            break;
+        }
+ 
+        case 4:{
+            std::sort(proprietati.begin(), proprietati.end(), comparatie);
+            for (int i=0; i<proprietati.size(); i++) {
+                proprietati[i]->afisare();
+                std::cout<<std::fixed << std::setprecision(2)<<proprietati[i]->pret_per_mp()<<"\n";
+            }
+            break;
+        }
+ 
+ 
+        case 5:{
+            std::cin>>tip_proprietate;
+            std::cin>>pret;
+            std::cin>>locatie;
+            std::cin>>suprafata;
+            std::cin>>etaj_sau_terasa;
+            for (auto a: proprietati){
+                if (a->filtru(tip_proprietate, pret, locatie, suprafata, etaj_sau_terasa)) {
+                a->afisare;
+                }
+            }
+            break;
+        }
+    }
+ 
+    return 0;
+}
