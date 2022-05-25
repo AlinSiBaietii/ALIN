@@ -1,0 +1,235 @@
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
+#include <vector>
+#include <string>
+ 
+class Angajat{
+private:
+    std::string nume;
+    std::string departament;
+public:
+    Angajat(std::string nume, std::string departament) :
+        nume(nume), departament(departament)
+        {}
+ 
+    bool operator< (Angajat &a){
+        if(this->salariu_brut() < a.salariu_brut()){
+            return true;
+        }
+        
+        return false;
+    }
+ 
+    virtual void afisare() = 0;
+    virtual float rentabilitate_angajat() = 0;
+    virtual float salariu_brut() = 0;
+    virtual std::string getTip() = 0;
+    
+    void setNume(std::string nume){
+        this->nume = nume;
+    }
+    void setDepartament(std::string departament){
+        this->departament = departament;
+    }
+    
+    std::string getNume(){
+        return this->nume;
+    }
+    std::string getDepartament(){
+        return this->departament;
+    }
+};
+ 
+class Salariat : public Angajat{
+private:
+    int norma;
+    int vechime;
+    float salariu_net;
+public:
+    Salariat(std::string nume, std::string departament, int norma, 
+                int vechime, float salariu_net) :
+        Angajat(nume, departament), 
+        norma(norma), vechime(vechime), salariu_net(salariu_net)
+        {}
+    
+    void afisare(){
+        std::cout << this->getNume() << " ";
+        std::cout << this->norma << " ";
+        std::cout << this->vechime << " ";
+        std::cout << this->salariu_net << "\n";
+    }
+    
+    float salariu_brut(){
+        float impozit;
+        if(this->getDepartament() == "IT"){
+            impozit = 0.35;
+        }else{
+            impozit = 0.45;
+        }
+        
+        return (this->salariu_net * 12 / (1 - impozit));
+    }
+    
+    float rentabilitate_angajat(){
+        int nr_zile_lucrate_anual = 250 - 20;
+        nr_zile_lucrate_anual -= (this->vechime) / 3;
+        
+        return ((this->norma * nr_zile_lucrate_anual) / this->salariu_brut());
+    }
+    
+    std::string getTip(){
+        return "salariat";
+    }
+};
+ 
+class Colaborator : public Angajat{
+private:
+    float onorariu;
+    float nr_prestari_anuale;
+public:
+    Colaborator(std::string nume, std::string departament, 
+                    float onorariu, float nr_prestari_anuale) :
+            Angajat(nume, departament),        
+            onorariu(onorariu), nr_prestari_anuale(nr_prestari_anuale)
+            {}
+    
+    void afisare(){
+        std::cout << this->getNume() << " ";
+        std::cout << this->onorariu << " ";
+        std::cout << this->nr_prestari_anuale << "\n";
+    }
+    
+    float rentabilitate_angajat(){return 0;}
+    float salariu_brut(){
+        float impozit;
+        float salariu_net = this->onorariu * this->nr_prestari_anuale;
+        if(this->getDepartament() == "IT"){
+            impozit = 0.35;
+        }else{
+            impozit = 0.45;
+        }
+        
+        return (salariu_net / (1 - impozit));
+    }
+    
+    std::string getTip(){
+        return "colaborator";
+    }
+};
+ 
+int main(){
+    int n;
+    std::vector<Angajat*> angajati;
+    
+    std::cin >> n;
+    for(int i = 0; i < n; i++){
+        std::string tip;
+        std::string nume_angajat;
+        std::string nume_dep;
+        
+        std::cin >> tip;
+        std::cin >> nume_angajat;
+        std::cin >> nume_dep;
+        
+        if(tip == "salariat"){
+            int norma;
+            int vechime;
+            float salariu_net;
+            
+            std::cin >> norma;
+            std::cin >> vechime;
+            std::cin >> salariu_net;
+            
+            angajati.push_back(new Salariat(nume_angajat, nume_dep, norma, vechime, salariu_net));
+        }else{
+            float onorariu;
+            float nr_prestari_anuale;
+            
+            std::cin >> onorariu;
+            std::cin >> nr_prestari_anuale;
+            angajati.push_back(new Colaborator(nume_angajat, nume_dep, onorariu, nr_prestari_anuale));
+        }
+    }
+    
+    int comanda;
+    std::cin >> comanda;
+    
+    switch(comanda){
+        case 1:
+        {
+            std::string dep;
+            std::cin >> dep;
+            
+            /*for(int i = 0; i < angajati.size(); i++){
+                if(angajati.at(i)->getDepartament() == dep){
+                    angajati.at(i)->afisare();
+                }
+            }*/
+            
+            for(auto a : angajati){
+                if(a->getDepartament() == dep){
+                    a->afisare();
+                }
+            }
+        }
+        break;
+        case 2:
+        {
+            std::string nume_angajat;
+            std::cin >> nume_angajat;
+            
+            for(auto a : angajati){
+                if(a->getNume() == nume_angajat){
+                    std::cout << std::fixed << std::setprecision(2) << a->salariu_brut();
+                    break;
+                }
+            }
+        }
+        break;
+        case 3:
+        {
+            int maxR = 0;
+            std::string nume = "";
+            for(auto a : angajati){
+                if(a->getTip() == "salariat"){
+                    if(a->rentabilitate_angajat() > maxR){
+                        maxR = a->rentabilitate_angajat();
+                        nume = a->getNume();
+                    }
+                }
+            }
+            
+            std::cout << nume << "\n";
+        }
+        break;
+        case 4:
+        {
+            std::string dep;
+            std::cin >> dep;
+            int suma = 0;
+            int nr_salarii = 0;
+            
+            for(auto a : angajati){
+                if(dep == a->getDepartament()){
+                    suma += a->salariu_brut();
+                    nr_salarii++;
+                }
+            }
+            
+            std::cout << std::fixed << std::setprecision(2) << ((float)suma / nr_salarii) << "\n";
+        }
+        break;
+        case 5:
+        {
+            std::sort(angajati.begin(), angajati.end());
+            
+            for(auto a : angajati){
+                a->afisare();
+            }
+        }
+        break;
+    }
+    
+    return 0;
+}
