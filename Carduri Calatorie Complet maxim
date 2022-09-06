@@ -1,0 +1,281 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+class Card_calatorie{
+  
+protected:
+    std::string tip;
+    int id;
+
+public:
+    
+        //constructor
+    Card_calatorie(int id, std::string tip):id(id), tip(tip){
+        
+    }
+    
+        //set get
+    std::string get_tip(){
+        return this->tip;
+    }    
+    
+    int get_id(){
+        return this->id;
+    }
+    
+    //functii
+    virtual void afisare(){
+        
+    }
+    
+    virtual void incarcare(int increment){
+        
+    }
+    
+    virtual void validare_calatorie(int timp){
+        
+    }
+    
+    virtual void trimite(int transfer){
+        
+    }
+    
+    virtual void accepta(int transfer){
+        
+    }
+    
+};
+
+class Card_autobuz: public Card_calatorie{
+    
+private:
+    int sold;
+    int moment_validare;
+    
+public:
+    
+        //constructor
+    Card_autobuz(int id, std::string tip, int sold, int moment_validare):Card_calatorie(id, tip), sold(sold), moment_validare(moment_validare){
+        
+    }    
+    
+    //functie comanda 1
+    void afisare(){
+        std::cout << id << " " << tip << " " << sold << " " << moment_validare << std::endl;
+    }
+    
+    //functie comanda 2
+    void incarcare(int increment){
+        
+        sold += increment;
+        //std::cout << id << " " << tip << " " << sold << " " << moment_validare << std::endl;
+        
+    }
+    
+    //functie comanda 3
+    void validare_calatorie(int timp){
+        
+        if(sold >= 3){
+            if(timp - moment_validare > 90){
+                sold -= 3;
+                moment_validare = timp;
+            }
+        }
+    }
+    
+    //functii comanda 4
+    void trimite(int transfer){
+        
+        if(sold >= transfer)
+            sold -= transfer;
+        else
+            std::cout << "Transfer nereusit" << std::endl;
+    }
+    void accepta(int transfer){
+        sold += transfer;
+    }
+    
+};
+
+
+class Card_metrou:public Card_calatorie{
+    
+private:
+    int calatorii;
+    int moment_validare;
+    
+public:
+    
+        //constructor
+    Card_metrou(int id, std::string tip, int calatorii, int moment_validare):Card_calatorie(id, tip), calatorii(calatorii), moment_validare(moment_validare){
+        
+    }
+
+    //functie comanda 1
+    void afisare(){
+        
+        std::cout << id << " " << tip << " " << calatorii << " " << moment_validare << std::endl;
+        
+    }
+    
+    //functie comanda 2
+    void incarcare(int increment){
+        
+        calatorii += increment;
+       // std::cout << id << " " << tip << " " << calatorii << " " << moment_validare << std::endl;
+        
+    }
+    
+    //functia comanda 3
+    void validare_calatorie(int timp){
+        
+        if(calatorii >= 1){
+            if(timp - moment_validare > 90){
+                calatorii -= 1;
+                moment_validare = timp;
+            }
+        }
+        else{
+            std::cout << "Numar calatorii insuficient" << std::endl;
+        }
+        
+    }
+    
+    //functii comanda 4
+    void trimite(int transfer){
+        if(calatorii >= transfer)
+            calatorii -= transfer;
+        else
+            std::cout << "Transfer nereusit" << std::endl;
+    }
+    void accepta(int transfer){
+        calatorii += transfer;
+    }
+    
+};
+
+
+int main(){
+    
+    int n;                //nr de carduri
+    std::cin >> n;
+    
+    std::vector<Card_calatorie*> carduri_calatorie;
+    
+        //citire
+        for(int i = 0 ; i<n ; i++){
+            
+            std::string tip_card;
+            int id_card;
+            std::cin >> tip_card;
+            std::cin >> id_card;
+            
+                //pentru autobuz
+                if(tip_card == "a"){
+                    
+                    int sold_autobuz;
+                    std::cin >> sold_autobuz;
+                    
+                    carduri_calatorie.push_back(new Card_autobuz(id_card, tip_card, sold_autobuz, 0));
+                    
+                }
+                
+                //pentru metrou
+                if(tip_card == "m"){
+                    
+                    int calatorii_metrou;
+                    std::cin >> calatorii_metrou;
+                    
+                    carduri_calatorie.push_back(new Card_metrou(id_card, tip_card, calatorii_metrou, 0));
+                    
+                }
+
+        }
+        
+        
+        
+        
+        //comenzi
+        
+        int comanda;
+        int turn = 1;
+        
+        
+        do{
+            
+            std::cin >> comanda;
+            
+                if(comanda == 1){
+                    
+                    for(int i = 0 ; i<n ; i++){
+                        carduri_calatorie.at(i)->afisare();
+                    }
+                }
+                
+                if(comanda == 2){
+                    
+                    int id_2;
+                    int increment;
+                    std::cin >> id_2;
+                    std::cin >> increment;
+                    
+                    for(int i = 0 ; i<n ; i++){
+                        
+                        if(carduri_calatorie.at(i)->get_id() == id_2)
+                            carduri_calatorie.at(i)->incarcare(increment);
+                        
+                    }
+                    
+                }
+                
+                if(comanda == 3){
+                    
+                    int id_3;
+                    int timp;
+                    
+                    std::cin >> id_3;
+                    std::cin >> timp;
+                    
+                        for(int i = 0 ; i<n ; i++){
+                            if(id_3 == carduri_calatorie.at(i)->get_id()){
+                                carduri_calatorie.at(i)->validare_calatorie(timp);
+                                
+                            }
+                        }
+                    
+                }
+                
+                if(comanda == 4){
+                    
+                    int id_4;
+                    int id_5;
+                    int transfer;
+                    
+                    std::cin >> id_4;
+                    std::cin >> id_5;
+                    std::cin >> transfer;
+                    
+                        for(int i = 0 ; i<n ; i++){
+                    
+                            if(id_4 == carduri_calatorie.at(i)->get_id())
+                                carduri_calatorie.at(i)->trimite(transfer);
+                            
+                            if(id_5 == carduri_calatorie.at(i)->get_id())
+                                carduri_calatorie.at(i)->accepta(transfer);
+                        
+                    
+                        }
+                }
+            
+                if(comanda == 5){
+                    turn = 0;
+                }
+            
+        }while(turn == 1);
+        
+    
+    
+    return 0;
+    
+}
