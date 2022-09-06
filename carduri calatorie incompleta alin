@@ -1,0 +1,201 @@
+#include<iostream>
+#include<string>
+#include<limits>
+#include<vector>
+
+
+class Card_calatorie{
+    private:
+    std::string tip_card;
+    int id;
+    
+    public:
+    virtual void afisare()=0;
+    virtual void incarcare(int adaugat)=0;
+    virtual void validare(int x)=0;
+    Card_calatorie(int id,std::string tip_card):id(id),tip_card(tip_card){}
+    
+    //getteri
+    
+    std::string getTip_card(){return this->tip_card;}
+    int getId(){return this->id;}
+    
+    
+    
+};
+
+
+class Card_autobuz:public Card_calatorie{
+    
+    private:
+    int sold;
+    int moment_ultima_validare;
+    
+    public:
+    
+    Card_autobuz(int id,std::string tip_card,int sold,int moment_ultima_validare):Card_calatorie(id,tip_card),sold(sold),moment_ultima_validare(moment_ultima_validare){}
+    
+    void afisare(){
+        std::cout<<getId()<<" "<<getTip_card()<<" "<<sold<<" "<<moment_ultima_validare<<std::endl;
+        
+        
+        
+    }
+    void incarcare(int adaugat){
+        
+            sold=sold+adaugat;
+        
+        
+        
+    }
+    void validare(int x){
+        if(sold>=3){
+            if((x-moment_ultima_validare)>90){
+                sold=sold-3;
+                moment_ultima_validare=x;
+            }
+            
+        }else std::cout<<"Sold insuficient"<<std::endl;
+        
+    } 
+            
+            
+
+    
+    
+};
+
+
+
+
+class Card_metrou:public Card_calatorie{
+    
+    private:
+    int nr_calatorii;
+     int moment_ultima_validare;
+    public:
+    
+    Card_metrou(int id,std::string tip_card,int nr_calatorii,int moment_ultima_validare):Card_calatorie(id,tip_card),nr_calatorii(nr_calatorii),moment_ultima_validare(moment_ultima_validare){}
+    
+    
+    void afisare(){
+        std::cout<<getId()<<" "<<getTip_card()<<" "<<nr_calatorii<<" "<<moment_ultima_validare<<std::endl;
+        
+        
+    }
+    
+    void incarcare(int adaugat){
+        
+            nr_calatorii=nr_calatorii+adaugat;
+            
+    }
+    
+    void validare(int x){
+        
+        if(nr_calatorii>=1){
+            if((x-moment_ultima_validare)>90){
+                nr_calatorii=nr_calatorii-1;
+                moment_ultima_validare=x;
+            }
+        }else 
+    std::cout<<"Numar calatorii insuficient"<<std::endl;
+        
+        
+    }
+};
+
+
+
+
+int main(){
+    
+    int n;
+    std::cin>>n;
+    
+    
+    std::vector<Card_calatorie*>carduri;
+    
+    std::string tip;
+    int id;
+     int moment_ultima_validare;
+    for(int i=0;i<n;i++){
+        std::cin>>tip;
+        std::cin>>id;
+        
+        if(tip=="a"){
+            int sold;
+            std::cin>>sold;
+            carduri.push_back(new Card_autobuz(id,tip,sold,0));
+            
+        }
+        
+        if(tip=="m"){
+            int nr_calatorii;
+            std::cin>>nr_calatorii;
+            carduri.push_back(new Card_metrou(id,tip,nr_calatorii,0));
+            
+            
+        }
+    }
+        int comanda;
+        int final=1;
+        do {
+            
+            std::cin>>comanda;
+            
+            if(comanda==1){
+                for(int i=0;i<n;i++)carduri.at(i)->afisare();
+            }
+            
+            if(comanda==2){
+                int adaugat;
+                int id2;
+                
+                std::cin>>id2;
+                std::cin>>adaugat;
+                for(int i=0;i<n;i++){
+                    
+                        if(id2==carduri.at(i)->getId())
+                    
+                    
+                    carduri.at(i)->incarcare(adaugat);
+                
+                
+            }
+            }
+            
+            if(comanda==3){
+                int x;
+                int id3;
+
+                std::cin >> id3;
+                std::cin >> x;
+                
+                for(int i=0 ; i<n ; i++){
+                    if(id3 == carduri.at(i)->getId() ) 
+                    carduri.at(i)->validare(x);
+                
+             
+                }
+            }
+            
+            if(comanda==5){
+                final=0;
+            
+        }
+        
+        }while (final);
+        
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return 0;
