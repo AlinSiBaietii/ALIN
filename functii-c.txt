@@ -1,0 +1,230 @@
+#include "functii.h"
+
+
+//Case 1
+/* functie creare a unui nod */
+struct NOD * creare_nod(){
+    struct NOD * nod;
+
+    /* alocare memorie nod*/
+    nod = (struct NOD * ) malloc(sizeof(struct NOD));
+
+    if (nod == NULL) {
+        printf("Eroare: memoria nu a putut fi alocata!\n");
+        return NULL;
+    }
+
+    /* citire valori nod */
+    printf("\nIntroduceti cuvant:");
+    scanf("%s", nod -> cuvant);
+
+    nod -> next = NULL;
+
+    return nod;
+}
+
+/* functie populare lista cu n cuvinte */
+struct NOD * populare_lista(struct NOD * head, int n){
+    int i;
+    for (i = 0; i < n; i++){
+        head = adaugare_nod_sfarsit_lista(head);
+    }
+    return head;
+}
+
+
+//Case 2
+/* functie afisare lista cuvinte */
+void afisare_lista(struct NOD * head){
+    int i = 0;
+    struct NOD * nod_curent;
+
+    if (head == NULL) {
+        printf("Atentie, lista este goala!\n");
+        return;
+    }
+
+    nod_curent = head;
+
+    while (nod_curent != NULL) {
+        /* afisare valoare curenta si pozitionare nod urmator */
+        printf("%d: %s\n", i++, nod_curent -> cuvant);
+        nod_curent = nod_curent -> next;
+    }
+}
+
+
+//Case 3
+/* functie adaugare cuvant la inceputul listei */
+struct NOD * adaugare_nod_inceput_lista(struct NOD * head){
+    
+    struct NOD * nod_nou;
+        if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        head = creare_nod();
+        printf("Cuvantul a fost adaugat.\n");
+        return head;
+    }
+        else{
+            nod_nou = creare_nod();
+            nod_nou -> next = head;
+            head = nod_nou;
+        printf("Cuvantul a fost adaugat.\n");
+        }
+    
+    return head;
+}
+
+
+
+//Case 4
+/* functie adaugare cuvant la sfarsitul listei */
+struct NOD * adaugare_nod_sfarsit_lista(struct NOD * head) {
+    int i = 0;
+    struct NOD * nod_curent, * nod_nou;
+
+    if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        head = creare_nod();
+        printf("Cuvantul a fost adaugat.\n");
+        return head;
+    }
+
+    /*parcurge lista element cu element pentru a ajunge la ultimul nod*/
+    nod_curent = head;
+
+    while (nod_curent != NULL) {
+        if (nod_curent -> next == NULL) {
+            /* creare si inserare nod nou in lista */
+            nod_nou = creare_nod();
+            nod_curent -> next = nod_nou;
+
+            printf("Cuvantul a fost adaugat.\n");
+            return head;
+        }
+        nod_curent = nod_curent -> next;
+    }
+}
+
+
+//Case 5
+/* functie adaugare cuvant in lista, pe o pozitie specificata */
+
+struct NOD * adaugare_nod_pozitie(struct NOD * head, int poz) {
+    int i = 0;
+    struct NOD * nod_curent, * nod_nou, aux;
+
+     if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        head = creare_nod();
+        printf("Cuvantul a fost adaugat.\n");
+        return head;
+    }
+
+    nod_curent = head;
+    for(i=0; i<poz; i++)
+        nod_curent = nod_curent -> next;
+    aux = (nod_curent -> next);
+    nod_nou = creare_nod;
+    nod_curent -> next = nod_nou;
+    nod_nou -> next = aux;
+
+    return head;
+}
+
+
+//Case 6
+/* functie stergerea primului cuvant din lista */
+
+struct NOD * stergere_primul_nod(struct NOD * head){
+    struct NOD * nod_sters;
+
+    if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        return NULL;
+    }
+
+    if(head->next==NULL){
+        free(head);
+        return NULL;
+    }
+
+    nod_sters = head;
+    head = head->next;
+    free(nod_sters);
+    retutrn head;
+}
+
+
+//Case 7
+/* functie stergerea ultimului cuvant din lista */
+
+struct NOD * stergere_ultimul_nod(struct NOD * head){
+    struct NOD * nod_sters;
+    struct NOD * nod_curent;
+
+    if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        return NULL;
+    }
+
+    if(head->next == NULL){
+        free(head)
+        return NULL;
+    }
+    nod_curent = head;
+
+    while(nod_curent->next->next != NULL){
+        nod_curent = nod_curent->next;
+            }
+        nod_sters = nod_curent->next;
+        nod_curent->next = NULL;
+        free(nod_sters);
+        return head;
+}
+
+//Case 8
+/* functie stergerea cuvant in lista, pe o pozitie specificata */
+
+struct NOD * stergere_nod(struct NOD * head, int poz){
+    int i = 0;
+    struct NOD * nod_curent;
+
+    if (head == NULL) {
+        printf("Atentie: lista este goala.");
+        return head;
+    }
+
+    nod_curent = head;
+    for(i=0; i<poz-1; i++)
+        nod_curent = nod_curent->next;
+
+    nod_curent = (nod_curent -> next) ->next;
+    nod_curent -> next = NULL;
+
+    return head;
+}
+
+//Case 9
+/* functie stergerea lista*/
+void stergere_lista(struct NOD * head){
+
+    struct NOD * nod_curent, * nod_anterior;
+
+    if (head == NULL) {
+        printf("Atentie: lista este goala deja.");
+    }
+
+    nod_curent = head->next;
+    nod_anterior = head;
+
+    while(nod_curent != NULL){
+
+        nod_anterior = NULL;
+        nod_curent = nod_curent -> next;
+        nod_anterior = nod_anterior -> next;
+    }
+    nod_anterior = NULL;
+}
+
+//Case 10
