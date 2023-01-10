@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1622557111 source:d:\facultate\semestrul 2\sda\probleme c\arbori_functii\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

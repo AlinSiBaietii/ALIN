@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1622588960 source:d:\facultate\semestrul 2\sda\probleme c\numere_lipsa\main.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+

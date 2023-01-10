@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1622586103 source:d:\facultate\semestrul 2\sda\probleme c\bill_of_materials\main.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+

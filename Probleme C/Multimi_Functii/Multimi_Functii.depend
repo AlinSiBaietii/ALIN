@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1622581946 source:d:\facultate\semestrul 2\sda\probleme c\multimi_functii\main.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1622564044 d:\facultate\semestrul 2\sda\probleme c\multimi_functii\set_functions.h
+	<stdio.h>
+	<stdlib.h>
+
+1622564023 source:d:\facultate\semestrul 2\sda\probleme c\multimi_functii\set_functions.c
+	"set_functions.h"
+

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1622558574 source:d:\facultate\semestrul 2\sda\probleme c\segmentare_numere\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
